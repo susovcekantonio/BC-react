@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Patient from "./Patient.jsx";
-import {getDoctor, addDoctor, updateDoctor, deleteDoctor} from "./doctorService.js"
+import { useNavigate } from "react-router-dom";
+import {getDoctor, addDoctor, updateDoctor, deleteDoctor} from "../service/doctorService.js"
 
-function DoctorApp() {
+function Doctor() {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState({ id: null, name: "" });
   const [name, setName] = useState("");
-  const [specialty, setSpecialty] = useState("");
+  const [specialty, setSpecialty] = useState("");  
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getDoctors(){
@@ -68,6 +69,11 @@ function DoctorApp() {
     }
   }
 
+  function handleSelectedDoctor(doctor) {
+    setSelectedDoctor(doctor);
+    navigate(`/doctor/${doctor.id}/patient`);
+  }
+
   return (
     <div id="doctor-container">
       <h2>Doctor List</h2>
@@ -97,16 +103,14 @@ function DoctorApp() {
           <span id="col-name">{doctor.name}</span>
           <span id="col-specialty">{doctor.specialty}</span>
           <span id="col-actions">
-          <button onClick={() => setSelectedDoctor({ id: doctor.id, name: doctor.name })}>Select</button>
+          <button onClick={() => handleSelectedDoctor(doctor)}>Select</button>
           <button onClick={() => handleUpdateDoctor(doctor.id)}>Edit</button>
           <button onClick={() => handleDeleteDoctor(doctor.id)}>Delete</button>
           </span>
         </li>
       ))}
-
-      <Patient doctorId={selectedDoctor.id} doctorName={selectedDoctor.name} />
     </div>
   );
 }
 
-export default DoctorApp;
+export default Doctor;

@@ -1,8 +1,7 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import Doctor from './Doctor.jsx'
+import AppRouter from './router/Router.jsx'
 
 createRoot(document.getElementById('root')).render(
-    <Doctor />
+    <AppRouter/>
 )

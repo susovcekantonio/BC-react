@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Treatment from "./Treatment";
-import { addPatient, getPatient, updatePatient, deletePatient } from "./patientService";
+import { addPatient, getPatient, updatePatient, deletePatient } from "../service/patientService";
 
-function Patient({ doctorId, doctorName }) {
+function Patient({ doctorId }) {
   const [patients, setPatients] = useState([]);
   const [name, setName] = useState("");
+  const [doctorName, setDoctorName] = useState("");
   const [condition, setCondition] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getPatients(doctorId){
-      const response = await getPatient();
+      const response = await getPatient(doctorId);
       if (response) {
-        setPatients(response.data);
+        console.log("Fetched patients:", response.data);
+        setPatients(response.data.patients);
+        setDoctorName(response.data.name);
       }
     }
     getPatients(doctorId);
@@ -67,18 +72,17 @@ function Patient({ doctorId, doctorName }) {
     setPatients(updatedPatients);
   }
 
-  const visiblePatients = patients.filter((p) => p.doctorId === doctorId);
+  function handleGoBack(){
+    navigate(`/doctor`);
+  }
+
 
   return (
-    <div>
-      <h3>
-        Patients {`of Dr. ${doctorName}`}
-      </h3>
-
-      {!doctorId ? (
-        <p><i>Please select a doctor to view/add patients.</i></p>
-      ) : (
-        <>
+    <div id="doctor-container">
+      <div id="first-line">
+        <button onClick={handleGoBack}>Go back</button>
+        <h3>Patients {`of Dr. ${doctorName}`}</h3>
+      </div>
           <input
             placeholder="Patient name"
             value={name}
@@ -99,7 +103,7 @@ function Patient({ doctorId, doctorName }) {
       <span id="col-actions">Actions</span>
       </li>
 
-      {visiblePatients.map((patient) => (
+      {patients.map((patient) => (
         <li key={patient.id} id={`list-row-${patient.id}`}>
           <span id="col-name">{patient.name}</span>
           <span id="col-specialty">{patient.condition}</span>
@@ -110,8 +114,7 @@ function Patient({ doctorId, doctorName }) {
           </span>
         </li>
       ))}
-        </>
-      )}
+
       <Treatment patient={selectedPatient} onClose={() => setSelectedPatient(null)} />
     </div>
   );

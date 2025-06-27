@@ -90,6 +90,17 @@ button:focus-visible {
   transition: background 0.3s;
 }
 
+#first-line{
+  display: flex;
+  height: 50px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+#first-line h3{
+  margin-right: 30%;
+}
+
 #doctor-container button:hover {
   background-color: #005fa3;
 }

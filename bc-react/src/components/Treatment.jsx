@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { addTreatment } from "../service/treatmentService";
 
 function Treatment({ patient, onClose }) {
   if (!patient) return null;
@@ -14,11 +15,8 @@ function Treatment({ patient, onClose }) {
     }
   }, [treatmentKey]);
   
-  function handleSave() {
-    const storedTreatments = JSON.parse(localStorage.getItem("treatments")) || {};
-    storedTreatments[treatmentKey] = treatment;
-    localStorage.setItem("treatments", JSON.stringify(storedTreatments));
-    onClose();
+  async function handleAddTreatment() {
+    const response = await addTreatment(patient.id, {treatment});
   }
 
 
@@ -33,7 +31,7 @@ function Treatment({ patient, onClose }) {
         onChange={(e) => setTreatment(e.target.value)}
       />
       <br />
-      <button onClick={handleSave}>Save</button>
+      <button onClick={handleAddTreatment}>Save</button>
       <button onClick={onClose}>Close</button>
     </div>
   );
